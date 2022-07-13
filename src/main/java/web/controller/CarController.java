@@ -14,26 +14,23 @@ import java.util.List;
 @Controller
 public class CarController {
 
-    List<Car> listCars;
+    CarService carService = new CarServiceImpl();
+    List<Car> listCars = CarServiceImpl.getListCars();
 
     @GetMapping(value = "/cars")
     public String printCar(ModelMap model,
                            @RequestParam(value = "count", required = false) Integer count) {
-        listCars = new ArrayList<>();
-        listCars.add(new Car("BMW", "Auto", 12345));
-        listCars.add(new Car("Toyota", "Manual", 22145));
-        listCars.add(new Car("Audi", "Auto", 55412));
-        listCars.add(new Car("Tesla", "Auto", 221133));
-        listCars.add(new Car("Lada", "Manual", 55412));
-        CarService carService = new CarServiceImpl();
-        if (count != null && count > 0) {
+        if (count != null && 0 < count && count < 5) {
             listCars = carService.getCountCars(listCars, count);
-            model.addAttribute("listCars", listCars);
-        }
-        if (count != null && count >= 5) {
             model.addAttribute("listCars", listCars);
             return "cars";
         }
+        if (count != null && count >= 5) {
+            listCars = CarServiceImpl.getListCars();
+            model.addAttribute("listCars", listCars);
+            return "cars";
+        }
+        listCars = CarServiceImpl.getListCars();
         model.addAttribute("listCars", listCars);
         return "cars";
     }
